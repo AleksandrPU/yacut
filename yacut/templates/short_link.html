@@ -53,9 +53,8 @@
     {% if messages %}
       {% for category, message in messages %}
         {% if category == 'short-link' %}
-          <a class="nav-link" href="{{ message }}">
-            {{ message }}
-          </a>
+          Короткая ссылка создана:
+          <a href="{{ message }}" class="text-center"><h5 class="text-center">{{ message }}</h5></a>
         {% endif %}
         {% if category == 'errors' %}
           <h5 class="text-center">{{ message }}</h5>
