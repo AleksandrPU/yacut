@@ -19,15 +19,17 @@ def index_view():
         db.session.add(urlmap)
         db.session.commit()
         flash(
-            f'{request.url}{form.custom_id.data}',
+            # todo
+            # f'{request.url}{form.custom_id.data}',
+            f'http://localhost/{form.custom_id.data}',
             'short-link'
         )
     return render_template('short_link.html', form=form)
 
 
-@app.route('/<string:custom_id>/', methods=['GET'])
+@app.route('/<string:custom_id>', methods=['GET'])
 def get_original_view(custom_id):
     original_link = URLMap.query.filter_by(short=custom_id).first()
     if original_link is None:
         abort(404)
-    return redirect(original_link.original)
+    return redirect(original_link.original, code=302)
