@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}YaCut - укоротитель ссылок{% endblock title %}
+
+{% block content %}
+<p class="text-center my-4">
+  Создайте короткую ссылку автоматически или предложите свой вариант
+</p>
+
+<div class="container">
+  <div class="row my-3">
+    <div class="col-sm">
+    </div>
+    <div class="col-sm">
+      <form method="POST" novalidate>
+        {{ form.csrf_token }}
+        <div>
+          <div>
+            {{ form.original_link(class="form-control form-control-lg py-2 mb-3", id="form-title",
+              placeholder="Длинная ссылка", autofocus=True) }}
+            <p>
+              {% if form.original_link.errors %}
+                {% for error in form.original_link.errors %}
+                  <span style="color:red">{{ error }}</span>
+                {% endfor %}
+              {% endif %}
+            </p>
+          </div>
+          <div>
+            {{ form.custom_id(class="form-control form-control-lg py-2 mb-3", id="form-link",
+              placeholder="Ваш вариант короткой ссылки") }}
+            <p>
+              {% if form.custom_id.errors %}
+                {% for error in form.custom_id.errors %}
+                  <span style="color:red">{{ error }}</span>
+                {% endfor %}
+              {% endif %}
+            </p>
+          </div>
+
+          {{ form.submit(class="btn btn-primary") }}
+        </div>
+      </form>
+    </div>
+    <div class="col-sm">
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+
+{% block information %}
+  {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        {% if category == 'short-link' %}
+          <a class="nav-link" href="{{ message }}">
+            {{ message }}
+          </a>
+        {% endif %}
+        {% if category == 'errors' %}
+          <h5 class="text-center">{{ message }}</h5>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+{% endblock information %}
