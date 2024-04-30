@@ -14,7 +14,9 @@ class URLMap(db.Model):
     def to_dict(self):
         return dict(
             url=self.original,
-            short_link=f'{request.url.removesuffix(request.path)}/{self.short}',
+            short_link=(
+                f'{request.url.removesuffix(request.path)}/{self.short}'
+            ),
         )
 
     def from_dict(self, data):
