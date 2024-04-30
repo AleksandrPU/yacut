@@ -29,7 +29,5 @@ def index_view():
 
 @app.route('/<string:custom_id>', methods=['GET'])
 def get_original_link_view(custom_id):
-    original_link = URLMap.query.filter_by(short=custom_id).first()
-    if original_link is None:
-        abort(HTTPStatus.NOT_FOUND)
+    original_link = URLMap.query.filter_by(short=custom_id).first_or_404()
     return redirect(original_link.original, code=HTTPStatus.FOUND)
