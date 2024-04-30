@@ -134,3 +134,6 @@ dmypy.json
 # Backup
 backup/
 
+# vim swap
+*.swp
+
