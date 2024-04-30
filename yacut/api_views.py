@@ -25,10 +25,10 @@ def create_short_link():
         form.custom_id.data = get_unique_short_id()
     form.validate()
 
-    for message in form.original_link.errors:
-        raise APIError(message, BadRequest)
-    for message in form.custom_id.errors:
-        raise APIError(message, BadRequest)
+    if form.original_link.errors:
+        raise APIError(form.original_link.errors[0], BadRequest)
+    if form.custom_id.errors:
+        raise APIError(form.custom_id.errors[0], BadRequest)
 
     urlmap = URLMap()
     urlmap.from_dict(
