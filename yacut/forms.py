@@ -1,15 +1,8 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, URLField
-from wtforms.validators import (
-    DataRequired,
-    Length,
-    Optional,
-    Regexp,
-    URL,
-    ValidationError,
-)
+from wtforms.validators import URL, DataRequired, Length, Optional, Regexp
 
-from yacut.models import URLMap
+from yacut.validators import unique_custom_id
 
 
 class URLMapForm(FlaskForm):
@@ -36,12 +29,7 @@ class URLMapForm(FlaskForm):
                 message='Указано недопустимое имя для короткой ссылки'
             ),
             Optional(),
+            unique_custom_id(),
         ],
     )
     submit = SubmitField('Создать')
-
-    def validate_custom_id(self, field):
-        if URLMap.query.filter_by(short=field.data).first() is not None:
-            raise ValidationError(
-                'Предложенный вариант короткой ссылки уже существует.'
-            )
