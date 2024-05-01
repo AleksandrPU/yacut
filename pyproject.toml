@@ -1,0 +1,15 @@
+[project]
+name = 'yacut'
+version = '0.0.1'
+description = 'Link shottener'
+dependencies = [
+    'flask',
+    'flask-sqlalchemy',
+    'flask-wtf',
+    'flask-migrate',
+    'python-dotenv',
+]
+
+[build-system]
+requires = ['flit_core<4']
+build-backend = 'flit_core.buildapi'
