@@ -1,8 +1,8 @@
 from random import choices
 from string import ascii_letters, digits
 
-from yacut.constants import LENGTH_GENERATE_CUSTOM_ID
-from yacut.models import URLMap
+from .constants import LENGTH_GENERATE_CUSTOM_ID
+from .models import URLMap
 
 
 def get_unique_short_id():

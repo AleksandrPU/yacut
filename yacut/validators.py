@@ -1,6 +1,6 @@
 from wtforms.validators import ValidationError
 
-from yacut.models import URLMap
+from .models import URLMap
 
 
 def unique_custom_id():
