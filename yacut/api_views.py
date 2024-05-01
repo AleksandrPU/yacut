@@ -1,22 +1,36 @@
 from http import HTTPStatus
 
-from flask import jsonify, request
-from werkzeug.exceptions import BadRequest, NotFound
+from flask import Blueprint, jsonify, request
+from werkzeug.exceptions import (
+    BadRequest,
+    MethodNotAllowed,
+    NotFound,
+    UnsupportedMediaType
+)
 
-from yacut import app, db
-from yacut.error_handlers import APIError
-from yacut.forms import URLMapForm
-from yacut.models import URLMap
-from yacut.utils import get_unique_short_id
+from . import db
+from .forms import URLMapForm
+from .models import URLMap
+from .utils import get_unique_short_id
+
+bp = Blueprint('api', __name__, url_prefix='/api')
 
 
-@app.route('/api/id/', methods=['POST'])
+class APIError(Exception):
+
+    def __init__(self, message, status=None):
+        super().__init__()
+        self.message = message
+        if status:
+            self.status_code = status.code
+
+    def to_dict(self):
+        return dict(message=self.message)
+
+
+@bp.route('/id/', methods=('POST',))
 def create_short_link():
     data = request.get_json()
-    if data is None:
-        raise APIError(
-            'Отсутствует тело запроса', BadRequest
-        )
 
     form = URLMapForm()
     form.original_link.data = data.get('url', None)
@@ -43,9 +57,24 @@ def create_short_link():
     return jsonify(urlmap.to_dict()), HTTPStatus.CREATED
 
 
-@app.route('/api/id/<string:short_id>/')
+@bp.route('/id/<string:short_id>')
 def get_original_link(short_id):
     original_link = URLMap.query.filter_by(short=short_id).first()
     if original_link is None:
         raise APIError('Указанный id не найден', NotFound)
     return jsonify({'url': original_link.original}), HTTPStatus.OK
+
+
+@bp.errorhandler(APIError)
+def api_error(error):
+    return jsonify(error.to_dict()), error.status_code
+
+
+@bp.errorhandler(MethodNotAllowed)
+def method_not_allowed(error):
+    return jsonify({'message': 'Метод не доступен'}), error.code
+
+
+@bp.errorhandler(UnsupportedMediaType)
+def unsupported_media_type(error):
+    return jsonify({'message': 'Отсутствует тело запроса'}), error.code
