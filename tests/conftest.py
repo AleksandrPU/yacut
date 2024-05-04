@@ -12,7 +12,7 @@ sys.path.append(str(BASE_DIR))
 
 
 try:
-    from yacut import app, db
+    from yacut import create_app, db
     from yacut.models import URLMap
 except NameError:
     raise AssertionError(
@@ -25,6 +25,10 @@ except ImportError as exc:
     raise AssertionError(
         'Не обнаружен объект класса SQLAlchemy. Создайте его и назовите db.'
     )
+
+
+app = create_app()
+app.extensions['sqlalchemy'].db = db
 
 
 @pytest.fixture
@@ -44,10 +48,9 @@ def _app(tmp_path):
     })
     with app.app_context():
         db.create_all()
-    yield app
-    db.drop_all()
-    db.session.close()
-    db_path.unlink()
+        yield app
+        db.drop_all()
+        db.session.close()
 
 
 @pytest.fixture
