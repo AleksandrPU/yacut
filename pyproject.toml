@@ -1,15 +1,25 @@
-[project]
-name = 'yacut'
-version = '0.0.1'
-description = 'Link shottener'
-dependencies = [
-    'flask',
-    'flask-sqlalchemy',
-    'flask-wtf',
-    'flask-migrate',
-    'python-dotenv',
-]
+[tool.poetry]
+name = "yacut"
+version = "0.0.1"
+description = "Link shottener"
+authors = ["Паутов Александр <sh2d000w@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+Flask = "3.0.3"
+Flask-SQLAlchemy = "3.1.1"
+Flask-Migrate = "4.0.7"
+Flask-WTF = "1.2.1"
+python-dotenv = "^1.0.1"
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "7.0.0"
+flake8-isort = "6.1.1"
+pytest = "8.2.0"
+ruff = "0.4.2"
+mixer = "^7.2.2"
 
 [build-system]
-requires = ['flit_core<4']
-build-backend = 'flit_core.buildapi'
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
