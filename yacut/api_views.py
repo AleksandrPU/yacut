@@ -57,7 +57,7 @@ def create_short_link():
     return jsonify(urlmap.to_dict()), HTTPStatus.CREATED
 
 
-@bp.route('/id/<string:short_id>')
+@bp.route('/id/<string:short_id>/', methods=('GET',))
 def get_original_link(short_id):
     original_link = URLMap.query.filter_by(short=short_id).first()
     if original_link is None:
@@ -70,11 +70,17 @@ def api_error(error):
     return jsonify(error.to_dict()), error.status_code
 
 
-@bp.errorhandler(MethodNotAllowed)
-def method_not_allowed(error):
-    return jsonify({'message': 'Метод не доступен'}), error.code
-
-
+@bp.app_errorhandler(MethodNotAllowed)
 @bp.errorhandler(UnsupportedMediaType)
-def unsupported_media_type(error):
-    return jsonify({'message': 'Отсутствует тело запроса'}), error.code
+def api_error_handler(error):
+    match error.code:
+        case 405:
+            message = 'Метод не доступен'
+            code = error.code
+        case 415:
+            message = 'Отсутствует тело запроса'
+            code = 400
+        case _:
+            message = 'Неизвестная ошибка'
+            code = 500
+    return jsonify({'message': message}), code

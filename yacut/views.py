@@ -36,20 +36,18 @@ def get_original_link_view(custom_id):
     return redirect(original_link.original, code=HTTPStatus.FOUND)
 
 
-@bp.errorhandler(NotFound)
-def not_found(error):
-    return render_template(
-        'error.html',
-        message='Такой короткой ссылки ещё не создали.',
-        code=error.code,
-    ), error.code
-
-
+@bp.app_errorhandler(NotFound)
 @bp.errorhandler(InternalServerError)
-def internal_server_error(error):
-    db.session.rollback()
+def view_error_handler(error):
+    match error.code:
+        case 404:
+            message = 'Такой короткой ссылки ещё не создали.'
+        case 500:
+            message = 'Что-то пошло не так. Попробуйте ещё раз, пожалуйста.'
+        case _:
+            message = 'Неизвестная ошибка.'
     return render_template(
         'error.html',
-        message='Что-то пошло не так. Попробуйте ещё раз, пожалуйста.',
+        message=message,
         code=error.code,
     ), error.code
