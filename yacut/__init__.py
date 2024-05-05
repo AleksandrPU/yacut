@@ -4,7 +4,6 @@ from flask_sqlalchemy import SQLAlchemy
 
 from settings import Config
 
-
 db = SQLAlchemy()
 migrate = Migrate()
 
